@@ -5,57 +5,12 @@ html, body {
      overflow-x: hidden;
  }
 
- header {
-     width: calc(100vw - 10px);
-     height: 30px;
-     padding: 15px 0 20px 20px;
-     font-size: 25px;
-     font-style: italic;
-     font-family: "Comic Sans MS", cursive, sans-serif;
-     line-height: 30px;
-     font-weight: bold;
-     color: white;
-     background-color: #007faa;
- }
 
- header span {
-     vertical-align: middle;
- }
-
- header img {
-     height: 30px;
-     vertical-align: middle;
- }
-
- .searchPanel {
-     position: relative;
-     width: 350px;
- }
-
- .searchPanel div {
-     padding: 20px;
- }
-
- .searchPanel input {
-     width: calc(100% - 50px);
-     font-size: 16px;
-     border: 0;
-     border-bottom: 1px solid #ccc;
- }
-
- #listPanel {
-     position: absolute;
-     top: 135px;
-     left: 0px;
-     width: 350px;
-     height: calc(100vh - 135px);
-     overflow-y: auto;
- }
 
  #myMap {
      position: absolute;
-     top: 65px;
-     left: 400px;
+     left: 40px;
+     right: 40px;
      width: calc(100vw - 400px);
      height: calc(100vh - 65px);
  }
@@ -83,7 +38,7 @@ html, body {
  #myLocationBtn {
      position: absolute;
      top: 150px;
-     right: 10px;
+     right: 180px;
      box-shadow: 0px 0px 4px rgba(0,0,0,0.16);
      background-color: white;
      background-image: url("images/GpsIcon.png");

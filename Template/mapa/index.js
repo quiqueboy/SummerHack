@@ -2,7 +2,7 @@
 var maxClusterZoomLevel = 11;
 
 //The URL to the store location data.
-var storeLocationDataUrl = './data/metro.txt';
+var storeLocationDataUrl = './data/ContosoCoffee.txt';
 
 //The URL to the icon image.
 var iconImageUrl = './images/metro.png';
@@ -11,8 +11,8 @@ var map, popup, datasource, iconLayer, centerMarker, searchURL;
 function initialize() {
     //Initialize a map instance.
     map = new atlas.Map('myMap', {
-        center: [-99.1870, 19.4058],
-        zoom: 18,
+        center: [-80.32947, 25.65385],
+        zoom: 11,
 
         //Add your Azure Maps primary subscription key to the map SDK.
         authOptions: {
@@ -148,6 +148,7 @@ function initialize() {
 }
 
 function loadStoreData() {
+
   //Download the store location data.
   fetch(storeLocationDataUrl)
       .then(response => response.text())
@@ -201,6 +202,31 @@ function loadStoreData() {
       });
   }
 
+  //Create an array of country/region ISO 2 values to limit searches to.
+  var countrySet = ['US', 'CA', 'GB', 'FR','DE','IT','ES','NL','DK'];
+
+  function performSearch() {
+      var query = document.getElementById('searchTbx').value;
+
+      //Perform a fuzzy search on the users query.
+      searchURL.searchFuzzy(atlas.service.Aborter.timeout(3000), query, {
+          //Pass in the array of country/region ISO2 for which we want to limit the search to.
+          countrySet: countrySet
+      }).then(results => {
+          //Parse the response into GeoJSON so that the map can understand.
+          var data = results.geojson.getFeatures();
+
+          if (data.features.length > 0) {
+              //Set the camera to the bounds of the results.
+              map.setCamera({
+                  bounds: data.features[0].bbox,
+                  padding: 40
+              });
+          } else {
+              document.getElementById('listPanel').innerHTML = '<div class="statusMessage">Unable to find the location you searched for.</div>';
+          }
+      });
+}
 
 function setMapToUserLocation() {
     //Request the user's location.
@@ -276,7 +302,7 @@ function updateListItems() {
             if (shape instanceof atlas.Shape) {
 
                 //Calculate the distance from the center of the map to each shape and store in the index. Round to 2 decimals.
-                distances[shape.getId()] = Math.round(atlas.math.getDistanceTo(camera.center, shape.getCoordinates(), 'kilometers') * 100) / 100;
+                distances[shape.getId()] = Math.round(atlas.math.getDistanceTo(camera.center, shape.getCoordinates(), 'miles') * 100) / 100;
             }
         });
 
@@ -312,12 +338,36 @@ function updateListItems() {
 
 //This converts a time that's in a 24-hour format to an AM/PM time or noon/midnight string.
 function getOpenTillTime(properties) {
-    var t = properties['Opens'];
-    var time = t-500;
-    if(time==0){
-      time=100;
+    var time = properties['Closes'];
+    var t = time / 100;
+    var sTime;
+
+    if (time === 1200) {
+        sTime = 'noon';
+    } else if (time === 0 || time === 2400) {
+        sTime = 'midnight';
+    } else {
+        sTime = Math.round(t) + ':';
+
+        //Get the minutes.
+        t = (t - Math.round(t)) * 100;
+
+        if (t === 0) {
+            sTime += '00';
+        } else if (t < 10) {
+            sTime += '0' + t;
+        } else {
+            sTime += Math.round(t);
+        }
+
+        if (time < 1200) {
+            sTime += ' AM';
+        } else {
+            sTime += ' PM';
+        }
     }
-    return 'Van a bordo de ' + time + ' a ' + t;
+
+    return 'Open until ' + sTime;
 }
 
 //Create an addressLine2 string that contains City, Municipality, AdminDivision, and PostCode.
@@ -389,7 +439,7 @@ function showPopup(shape) {
     html.push('<div class="popupTitle">',
         properties['AddressLine'],
         '<div class="popupSubTitle">',
-        //getAddressLine2(properties),
+        getAddressLine2(properties),
         '</div></div><div class="popupContent">',
 
         //Convert the closing time to a format that's easier to read.
@@ -398,13 +448,23 @@ function showPopup(shape) {
         //Add the distance information.
         '<br/>', distance,
         ' miles away',
-        '<br /><a>',
-        getAddressLine2(properties),
+        '<br /><img src="images/PhoneIcon.png" title="Phone Icon"/><a href="tel:',
+        properties['Phone'],
+        '">',
+        properties['Phone'],
         '</a>'
     );
 
-    if (properties['IsWiFiHotSpot'] ) {
-        html.push('<br/>Se encuentra lleno: ');
+    if (properties['IsWiFiHotSpot'] || properties['IsWheelchairAccessible']) {
+        html.push('<br/>Amenities: ');
+
+        if (properties['IsWiFiHotSpot']) {
+            html.push('<img src="images/WiFiIcon.png" title="Wi-Fi Hotspot"/>');
+        }
+
+        if (properties['IsWheelchairAccessible']) {
+            html.push('<img src="images/WheelChair-small.png" title="Wheelchair Accessible"/>');
+        }
     }
 
     html.push('</div></div>');
@@ -470,7 +530,7 @@ function showPopup(shape) {
     html.push('<div class="popupTitle">',
         properties['AddressLine'],
         '<div class="popupSubTitle">',
-        //getAddressLine2(properties),
+        getAddressLine2(properties),
         '</div></div><div class="popupContent">',
 
         //Convert the closing time to a format that's easier to read.
@@ -478,14 +538,24 @@ function showPopup(shape) {
 
         //Add the distance information.
         '<br/>', distance,
-        ' Kilometros de distancia',
-        '<br /><a>',
-        getAddressLine2(properties),
+        ' miles away',
+        '<br /><img src="images/PhoneIcon.png" title="Phone Icon"/><a href="tel:',
+        properties['Phone'],
+        '">',
+        properties['Phone'],
         '</a>'
     );
 
-    if (properties['IsWiFiHotSpot']) {
-        html.push('<br/>Se encuentra lleno. ');
+    if (properties['IsWiFiHotSpot'] || properties['IsWheelchairAccessible']) {
+        html.push('<br/>Amenities: ');
+
+        if (properties['IsWiFiHotSpot']) {
+            html.push('<img src="images/WiFiIcon.png" title="Wi-Fi Hotspot"/>');
+        }
+
+        if (properties['IsWheelchairAccessible']) {
+            html.push('<img src="images/WheelChair-small.png" title="Wheelchair Accessible"/>');
+        }
     }
 
     html.push('</div></div>');

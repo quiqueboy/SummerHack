@@ -2,10 +2,10 @@
 var maxClusterZoomLevel = 11;
 
 //The URL to the store location data.
-var storeLocationDataUrl = './data/metro.txt';
+var storeLocationDataUrl = './data/metrobus.txt';
 
 //The URL to the icon image.
-var iconImageUrl = './images/metro.png';
+var iconImageUrl = './images/metrobus.png';
 var map, popup, datasource, iconLayer, centerMarker, searchURL;
 
 function initialize() {
@@ -313,9 +313,10 @@ function updateListItems() {
 //This converts a time that's in a 24-hour format to an AM/PM time or noon/midnight string.
 function getOpenTillTime(properties) {
     var t = properties['Opens'];
-    var time = t-500;
-    if(time==0){
-      time=100;
+    var aux = properties['AdminDivision'];
+    var time = t-60;
+    if(time=='Tipo 2'){
+      time=t-45;
     }
     return 'Van a bordo de ' + time + ' a ' + t;
 }
