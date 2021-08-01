@@ -1,7 +1,8 @@
 # SummerHack "Viaja Con La Nube"
 En este repositorio tenemos 2 proyectos, el primero que es HTML plano y el segundo que es un proyecto de Django, cada proyecto esta nombrado de acuerdo a su funcionalidad.
 
-Tiktok: https://vm.tiktok.com/ZMd3JwfJH/
+# Tiktok: 
+https://vm.tiktok.com/ZMd3JwfJH/
 
 # Acuerdo de nivel de servicio compuesto
 De acuerdo con información oficial que brinda Azure en “Contratos de nivel de servicio” obtenemos los siguientes valores
