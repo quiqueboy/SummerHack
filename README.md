@@ -9,6 +9,7 @@ Static web apps -> Garantizamos que las Aplicaciones que se ejecuten en el plan 
 Proceso -> Azure functions -> Para Aplicaciones de función que se ejecuten en Planes de consumo garantizamos que las funciones asociadas se ejecutarán el 99,95 % del tiempo una vez que se activa correctamente el elemento desencadenante.
 Internet de las cosas -> Azure Maps -> Garantizamos que los Mapas de Azure estarán disponibles por lo menos el 99,9 % del tiempo.
 Tomando en consideración los datos oficiales, obtenemos el SLA compuesto:
+![alt text](https://github.com/quiqueboy/SummerHack/blob/main/Documentaci%C3%B3n/SLA%20Compuesto.png)
  
 # TCO y Costo mensual
 Costo total de Azure en tres años: USD 6,232.00
