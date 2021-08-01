@@ -16,3 +16,6 @@ Tomando en consideración los datos oficiales, obtenemos el SLA compuesto:
 Costo total de Azure en tres años: USD 6,232.00
 Costo mensual: USD 173.11
 
+
+# Resultado del proyecto final
+https://agreeable-hill-047209110.azurestaticapps.net/index.html
